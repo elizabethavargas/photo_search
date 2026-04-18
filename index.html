@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Photo Search</title>
+</head>
+<body>
+
+<h1>Photo Search</h1>
+
+<!-- SEARCH -->
+<input type="text" id="query" placeholder="Search photos..." />
+<button onclick="search()">Search</button>
+
+<div id="results"></div>
+
+<hr>
+
+<!-- UPLOAD -->
+<h2>Upload Photo</h2>
+
+<input type="file" id="fileInput"><br><br>
+<input type="text" id="labels" placeholder="Custom labels (e.g. dog, cute)" />
+<button onclick="upload()">Upload</button>
+
+<script>
+const API_URL = "https://8lr2v7vlmd.execute-api.us-east-1.amazonaws.com/stage_1";
+
+// SEARCH
+let isSearching = false;
+
+async function search() {
+    if (isSearching) return;
+
+    const query = document.getElementById("query").value;
+    const resultsDiv = document.getElementById("results");
+    const button = document.querySelector("button");
+
+    if (!query) return;
+
+    isSearching = true;
+    button.disabled = true;
+    button.innerText = "Searching...";
+
+    resultsDiv.innerHTML = "<p>Loading results...</p>";
+
+    try {
+        const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        resultsDiv.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            resultsDiv.innerHTML = "<p>No results found</p>";
+        } else {
+            data.forEach(url => {
+                const img = document.createElement("img");
+                img.src = url;
+                img.width = 200;
+                img.style.margin = "5px";
+                resultsDiv.appendChild(img);
+            });
+        }
+
+    } catch (err) {
+        resultsDiv.innerHTML = "<p>Error loading results</p>";
+    }
+
+    isSearching = false;
+    button.disabled = false;
+    button.innerText = "Search";
+}
+
+// UPLOAD
+async function upload() {
+    const file = document.getElementById("fileInput").files[0];
+    const labels = document.getElementById("labels").value;
+
+    if (!file) {
+        alert("Choose a file");
+        return;
+    }
+
+    const filename = file.name;
+
+    await fetch(`${API_URL}/photos/${filename}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": file.type,
+            "x-amz-meta-customlabels": labels
+        },
+        body: file
+    });
+
+    alert("Uploaded!");
+}
+</script>
+
+</body>
+</html>
+
+
