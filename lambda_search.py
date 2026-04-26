@@ -47,12 +47,8 @@ def get_keywords_from_lex(query):
 
     return keywords
 
-
-# -----------------------
-# Lambda handler
-# -----------------------
 def lambda_handler(event, context):
-    print("EVENT:", json.dumps(event))
+    #print("EVENT:", json.dumps(event))
 
     # 1. Get query from API Gateway
     query = event.get("queryStringParameters", {}).get("q", "")

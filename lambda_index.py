@@ -10,7 +10,7 @@ s3 = boto3.client('s3')
 region = 'us-east-1'
 service = 'es'
 
-# open searchg
+# open search
 host = 'https://search-photos-4nxovnoosm2qtihvnjxnax7b4i.us-east-1.es.amazonaws.com'
 
 def lambda_handler(event, context):
