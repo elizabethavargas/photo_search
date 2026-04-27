@@ -11,7 +11,7 @@ host = "https://search-photos-4nxovnoosm2qtihvnjxnax7b4i.us-east-1.es.amazonaws.
 
 lex = boto3.client("lexv2-runtime")
 
-# helper functions
+# Helper functions
 def extract_keywords_fallback(query):
     stop_words = {
         "show", "me", "photos", "picture", "pictures", "of",
